@@ -4,63 +4,63 @@ Description
 This repo contains a set of docker scripts to install the latest,
 working version of clash.
 
-Prepare installation
-====================
+Installation
+============
 
-Linux
------
+You need docker, either native (linux) or through boot2docker. If you
+are on linux, jump to the following section.
 
-The `Dockerfile` should be good to go.
-
-OSX
----
-
-Init boot2docker:
+If you are on OSX/Windows, install and init docker through the
+boot2docker tool. On Mac you need to initialize the shell environment
+before invoking docker:
 
     $(boot2docker shellinit)
 
-Creation of the container
-=========================
+Windows users should follow instructions on the boot2docker website.
 
-Create:
+Creation of the container (only once)
+=====================================
 
-    docker build -t clashimg .
+To create the container:
 
-Remove the container
+    docker build -t clashimg . # In the directory containing the Dockerfile
 
-    docker rmi clashimg
-
-Setup folder sharing (creates a container named `my-data`)
+To setup folder sharing with the `clashimg` container, you need another
+container (called `my-data`)
 
     $ docker run -v /data --name my-data busybox true
     $ docker run --rm -v /usr/local/bin/docker:/docker -v /var/run/docker.sock:/docker.sock svendowideit/samba my-data
-    $ boot2docker ip
+    $ boot2docker ip # You need this address when mounting the new folder.
 
-Usage
-=====
+After the creation of `my-data`, you should mount the folder on your
+local filesystem;
 
--   Connect to the container:
+-   on OSX, mount this:
 
-        docker run -i -t clashimg /bin/bash
+        cifs://192.168.59.103/data \# This will mount on /Volumes/data
 
-    or, to share data with `my-data`
-
-        docker run -it --volumes-from my-data clashimg
-
--   To share data with `my-data` from the host (and thus with
-    `clashimg`):
-
-    on OSX, mount this:
-
-        cifs://192.168.59.103/data    # This will mount on /Volumes/data
-
-    on Windows mount this:
+-   on Windows mount this:
 
         \\192.168.59.103\data
 
--   List of current Docker images
+To wipe out the container (only when you dont need it anymore):
 
-        docker images
+    docker rmi clashimg
+
+Use (every time you want to compile something)
+==============================================
+
+To instantiate and connect to an instance of the container:
+
+    docker run -it --volumes-from my-data clashimg
+
+This will open a shell into an instance of the container `clashimg`. The
+Clash compiler can be found in `/root/.cabal/bin/clash`. Beware that
+only the data saved into `/data` will survive this container instance,
+so be sure to work in `/data`.
+
+When you exit the shell the instance is destroyed but `/data` remains to
+be used in any other future instantiation of the container.
 
 Using clash
 ===========
