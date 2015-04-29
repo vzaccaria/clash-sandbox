@@ -5,22 +5,33 @@ module Main where
 import Control.Monad.Trans.State.Lazy
 import CLaSH.Prelude
 
-_shiftRows = put (4::(Signed 8))
-_mixCol    = put (5::(Signed 8))
+type AESState = Signed 8
+type AESStateProcessor = State AESState ()
 
+
+_shiftRows:: AESStateProcessor
+_shiftRows = modify (+1)
+
+_mixCol:: AESStateProcessor
+_mixCol    = modify (+1)
+
+round:: AESStateProcessor
 round = _shiftRows >>  _mixCol
 
-_roundMealy state input = (state', output)
+nextAESState :: AESState -> AESState
+nextAESState  = execState Main.round
+
+-- no inputs/output corresponds to state
+aesMealy:: AESState -> () -> (AESState, AESState)
+aesMealy s () = (s', s')
   where
-    state' = execState Main.round state
-    output = state
+    s' = nextAESState s
 
-roundMealy = _roundMealy <^> 0
+topEntity :: Signal () -> Signal AESState
+topEntity = mealy aesMealy 0
 
-topEntity = roundMealy
-
-main :: IO ()
-main = putStrLn "Hello"
+-- main :: IO ()
+-- main = putStrLn "Hello"
 
 
 -- shiftRows _ = put 0
