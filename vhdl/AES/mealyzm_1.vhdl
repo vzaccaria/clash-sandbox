@@ -10,11 +10,11 @@ entity mealyzm_1 is
   port(eta_i1         : in unsigned(0 downto 0);
        system1000     : in std_logic;
        system1000_rst : in std_logic;
-       bodyVar_o      : out signed(7 downto 0));
+       bodyVar_o      : out array_of_unsigned_32(0 to 3));
 end;
 
 architecture structural of mealyzm_1 is
-  signal o1_0      : signed(7 downto 0);
+  signal o1_0      : array_of_unsigned_32(0 to 3);
   signal bodyVar_1 : product0;
   signal x_2       : product0;
 begin

@@ -10,7 +10,7 @@ entity topEntity_0 is
   port(eta_i1         : in unsigned(0 downto 0);
        system1000     : in std_logic;
        system1000_rst : in std_logic;
-       topLet_o       : out signed(7 downto 0));
+       topLet_o       : out array_of_unsigned_32(0 to 3));
 end;
 
 architecture structural of topEntity_0 is
