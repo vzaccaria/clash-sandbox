@@ -9,6 +9,6 @@ generateProject(function (_) {
 
   _.collect("clean", function (_) {
     _.cmd("rm -rf vhdl")
-    _.cmd("rm *.hi *.o *.hs *.s")
+    _.cmd("rm -f *.hi *.o *.s")
   })
 })

@@ -7,11 +7,11 @@
 
 
 .PHONY: all
-all: k-8q49m9h0
+all: k-xgqdjutf
 
 
 .PHONY: clean
-clean: k-enlm4w5l k-ax0se4mr
+clean: k-v1eyduev k-2bmr2teh
 
 
 .PHONY: prepare
@@ -20,19 +20,19 @@ prepare:
 
 
 
-.PHONY: k-8q49m9h0
-k-8q49m9h0:  
+.PHONY: k-xgqdjutf
+k-xgqdjutf:  
 	clash --vhdl aes.hs
 
 
-.PHONY: k-enlm4w5l
-k-enlm4w5l:  
+.PHONY: k-v1eyduev
+k-v1eyduev:  
 	rm -rf vhdl
 
 
-.PHONY: k-ax0se4mr
-k-ax0se4mr:  
-	rm *.hi *.o *.hs *.s
+.PHONY: k-2bmr2teh
+k-2bmr2teh:  
+	rm -f *.hi *.o *.s
 
 
 .PHONY: update
