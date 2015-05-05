@@ -4,20 +4,19 @@ module AES where
 
 import Control.Monad.Trans.State.Lazy
 import CLaSH.Prelude
-import qualified Data.SBV
-import qualified Data.SBV.Examples.Crypto.AES as A
 
 
 -- Main parameters
 
-type AESWord = (Unsigned 32)
+type AESWord  = (Unsigned 32)
 type AESState = Vec 4 AESWord -- 4x4 GF28
-type AESKey = Unsigned 128 -- 4x4 GF28
+type AESKey   = Unsigned 128 -- 4x4 GF28
 
 ncycles :: Integer
 ncycles = 10 -- For 128bit AES Keys
 
 -- Utility functions
+
 
 
 -- Additional data structures
