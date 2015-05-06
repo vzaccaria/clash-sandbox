@@ -12,10 +12,10 @@ entity BundleZ2T1_2 is
 end;
 
 architecture structural of BundleZ2T1_2 is
-  signal repANF_0 : array_of_unsigned_32(0 to 3);
-  signal repANF_1 : array_of_unsigned_32(0 to 3);
-  signal x_2      : array_of_unsigned_32(0 to 3);
-  signal y_3      : array_of_unsigned_32(0 to 3);
+  signal repANF_0 : array_of_unsigned_8(0 to 15);
+  signal repANF_1 : array_of_unsigned_8(0 to 15);
+  signal x_2      : array_of_unsigned_8(0 to 15);
+  signal y_3      : array_of_unsigned_8(0 to 15);
 begin
   repANF_0 <= x_2;
   

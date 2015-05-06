@@ -15,38 +15,35 @@ entity zuzpzf_3 is
 end;
 
 architecture structural of zuzpzf_3 is
-  signal repANF_0 : array_of_unsigned_32(0 to 3);
-  signal repANF_1 : array_of_unsigned_32(0 to 3);
-  signal szm_2    : array_of_unsigned_32(0 to 3);
-  signal tmp_3    : array_of_unsigned_32(0 to 3);
+  signal repANF_0 : array_of_unsigned_8(0 to 15);
+  signal szm_1    : array_of_unsigned_8(0 to 15);
+  signal tmp_2    : array_of_unsigned_8(0 to 15);
 begin
-  register_n_8 : block
-    signal n_9 : array_of_unsigned_32(0 to 3);
-    signal n_10 : array_of_unsigned_32(0 to 3);
+  register_n_19 : block
+    signal n_20 : array_of_unsigned_8(0 to 15);
+    signal n_21 : array_of_unsigned_8(0 to 15);
   begin
-    n_9 <= array_of_unsigned_32'(unsigned'("00000000000000000000000000000000"),unsigned'("00000000000000000000000000000000"),unsigned'("00000000000000000000000000000000"),unsigned'("00000000000000000000000000000000"));
+    n_20 <= array_of_unsigned_8'(unsigned'("00000001"),unsigned'("00000010"),unsigned'("00000011"),unsigned'("00000100"),unsigned'("00000001"),unsigned'("00000010"),unsigned'("00000011"),unsigned'("00000100"),unsigned'("00000001"),unsigned'("00000010"),unsigned'("00000011"),unsigned'("00000100"),unsigned'("00000001"),unsigned'("00000010"),unsigned'("00000011"),unsigned'("00000100"));
   
-    process(system1000,system1000_rst,n_9)
+    process(system1000,system1000_rst,n_20)
     begin
       if system1000_rst = '0' then
-        n_10 <= n_9;
+        n_21 <= n_20;
       elsif rising_edge(system1000) then
-        n_10 <= repANF_1;
+        n_21 <= szm_1;
       end if;
     end process;
   
-    tmp_3 <= n_10;
+    tmp_2 <= n_21;
   end block;
   
-  repANF_0 <= tmp_3;
+  repANF_0 <= tmp_2;
   
-  repANF_1 <= szm_2;
+  szm_1 <= ds_i1.product0_sel0;
   
-  szm_2 <= ds_i1.product0_sel0;
-  
-  zuzdzf_4_topLet_o : entity zuzdzf_4
+  aesMealy_4_topLet_o : entity aesMealy_4
     port map
-      (topLet_o => topLet_o
-      ,eta_i1   => repANF_0
-      ,eta_i2   => eta_i2);
+      (bodyVar_o => topLet_o
+      ,s_i1      => repANF_0
+      ,ds_i2     => eta_i2);
 end;

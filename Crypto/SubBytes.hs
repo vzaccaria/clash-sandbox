@@ -1,11 +1,12 @@
 {-# LANGUAGE DataKinds #-}
 
-module ShiftRows where
+module SubBytes where
 
 import Types
 import CLaSH.Prelude
 import Control.Monad.Trans.State.Lazy
 import GF28
 
-_shiftRows:: AESStateProcessor
-_shiftRows = _genStateProcessor sbox
+
+_subBytes:: AESStateProcessor
+_subBytes = _genStateProcessor sbox

@@ -15,7 +15,7 @@ architecture structural of testbench is
   signal system1000     : std_logic;
   signal system1000_rst : std_logic;
   signal eta_i1         : unsigned(0 downto 0);
-  signal topLet_o       : array_of_unsigned_32(0 to 3);
+  signal topLet_o       : array_of_unsigned_8(0 to 15);
 begin
   done <= finished;
   
