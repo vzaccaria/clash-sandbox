@@ -4,7 +4,7 @@ var generateProject = require('diy').generateProject
 generateProject(function (_) {
 
   _.collect("all", function (_) {
-    _.cmd("clash -i. --vhdl Crypto/AES.hs")
+    _.cmd("clash -iCrypto --vhdl Crypto/AES.hs")
   })
 
   _.collect("clean", function (_) {

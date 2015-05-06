@@ -7,11 +7,11 @@
 
 
 .PHONY: all
-all: k-is1yxbr4
+all: k-2quqth95
 
 
 .PHONY: clean
-clean: k-1ge3fxj3 k-m9r8l09u
+clean: k-2dnm002y k-1b2q4amw
 
 
 .PHONY: prepare
@@ -20,18 +20,18 @@ prepare:
 
 
 
-.PHONY: k-is1yxbr4
-k-is1yxbr4:  
-	clash -i. --vhdl Crypto/AES.hs
+.PHONY: k-2quqth95
+k-2quqth95:  
+	clash -iCrypto --vhdl Crypto/AES.hs
 
 
-.PHONY: k-1ge3fxj3
-k-1ge3fxj3:  
+.PHONY: k-2dnm002y
+k-2dnm002y:  
 	rm -rf vhdl
 
 
-.PHONY: k-m9r8l09u
-k-m9r8l09u:  
+.PHONY: k-1b2q4amw
+k-1b2q4amw:  
 	rm -f *.hi *.o *.s
 
 
