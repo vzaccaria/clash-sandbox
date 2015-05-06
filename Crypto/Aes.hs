@@ -4,8 +4,10 @@ module AES where
 
 import CLaSH.Prelude
 
-import Crypto.Types
-import Crypto.ShiftRows
+import Control.Monad.Trans.State.Lazy
+
+import Types
+import ShiftRows
 
 ncycles :: Integer
 ncycles = 10 -- For 128bit AES Keys

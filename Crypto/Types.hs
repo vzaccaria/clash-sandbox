@@ -1,6 +1,6 @@
 {-# LANGUAGE DataKinds #-}
 
-module AES where
+module Types where
 
 import Control.Monad.Trans.State.Lazy
 import CLaSH.Prelude
