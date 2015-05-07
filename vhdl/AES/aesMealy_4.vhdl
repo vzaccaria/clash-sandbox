@@ -52,10 +52,10 @@ begin
     mapSN_n_15 : if tmp_10'length /= 0 generate
       mapIter_n_16 : for n_17 in tmp_10'range generate
       begin
-        sbox_5_11 : entity sbox_5
+        id_6_11 : entity id_6
   port map
   (topLet_o => tmp_10(n_17)
-  ,ds_i1 => n_13(n_17));
+  ,eta_i1 => n_13(n_17));
       end generate;
     end generate;
   end block;

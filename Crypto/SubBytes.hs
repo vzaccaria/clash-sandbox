@@ -9,4 +9,4 @@ import GF28
 
 
 _subBytes:: AESStateProcessor
-_subBytes = _genStateProcessor sbox
+_subBytes = _genStateProcessor id

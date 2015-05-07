@@ -1,4 +1,5 @@
 {-# LANGUAGE DataKinds #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 module GF28 where
 
@@ -6,10 +7,12 @@ import Types
 import GHC.List
 import CLaSH.Prelude
 import Control.Monad.Trans.State.Lazy
+import Language.Haskell.TH
+
 
 
 -- FIXME: Should use a blockram to store the coefficients here.
--- Or, better use template haskell to generate the function.
+-- Or, maybe use template haskell to generate the function.
 
 sboxTable :: [AESByte]
 sboxTable = [
@@ -31,6 +34,26 @@ sboxTable = [
   0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16
   ]
 
+_byteLit:: Integral a => a -> Q Exp
+_byteLit x = litE $ integerL $ toInteger x
 
-sbox :: AESByte -> AESByte
-sbox 0x00 = 0x63
+_byteLitP:: Integral a => a -> Q Pat
+_byteLitP x = litP $ integerL $ toInteger x
+
+-- returns an element of sboxTable as a quoted expression
+_sbox:: AESByte -> Q Exp
+_sbox x = _byteLit (sboxTable GHC.List.!! (fromEnum x))
+
+_buildClause :: AESByte -> Clause
+_buildClause x = Clause [ LitP (IntegerL (toInteger x)) ]
+               (NormalB (LitE (IntegerL (toInteger(sboxTable GHC.List.!! (fromEnum x))))))
+               []
+
+_buildDecl:: [Dec]
+_buildDecl = [
+  (FunD (mkName "sbox")
+    (fmap _buildClause sboxTable))
+  ]
+
+_buildSBox:: Q [Dec]
+_buildSBox = return $ _buildDecl
