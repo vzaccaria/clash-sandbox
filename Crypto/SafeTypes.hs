@@ -7,11 +7,13 @@ module Types where
 import           CLaSH.Prelude
 import qualified CLaSH.Sized.Vector             as C
 import           Control.Monad.Trans.State.Lazy
+import qualified Mask                           as M
+import qualified TypeList                       as TL
 
 
 type AESByte  = (Unsigned 8)
-type AESState = Vec 16 AESByte -- 4x4 GF28
-type AESKey   = Unsigned 128 -- 4x4 GF28
+type AESState = Vec 16 AESByte
+type AESKey   = Vec 16 AESByte
 
 type StateTransform = AESState -> AESState
 type ByteTransform = AESByte -> AESByte

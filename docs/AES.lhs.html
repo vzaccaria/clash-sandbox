@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+</head>
+<body>
+<h1 id="introduction">Introduction</h1>
+<p>The main program contains the top entity that will be synthesized by the Clash compiler.</p>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="kw">module</span> <span class="dt">AES</span> <span class="kw">where</span>
+
+<span class="kw">import </span><span class="dt">CLaSH.Prelude</span>
+<span class="kw">import </span><span class="dt">Control.Monad.Trans.State.Lazy</span></code></pre>
+<p>The <code>Types</code> import defines, among other things, the AES state and the type of a state processor, i.e.:</p>
+<ul>
+<li>the state is an vector of 16 bytes.</li>
+<li>a state processor is just a function that takes a state and produces the next state.</li>
+</ul>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="kw">import </span><span class="dt">Types</span>
+<span class="kw">import </span><span class="dt">ShiftRows</span>
+<span class="kw">import </span><span class="dt">SubBytes</span></code></pre>
+<h2 id="the-aes-round">The AES Round</h2>
+<p>In the actual implementation of the AES, the round can be decomposed into the following pipeline stages:</p>
+<ol style="list-style-type: decimal">
+<li>SubBytes</li>
+<li>ShiftRows</li>
+<li>MixColumns</li>
+<li>AddRoundKey</li>
+</ol>
+<p>Here the round is defined by a sequence of state processing steps that are combined into a pipeline. We use a <code>bind</code> to connect two state processors:</p>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell">round<span class="ot">::</span> <span class="dt">AESStateProcessor</span>
+round <span class="fu">=</span> _subBytes <span class="ot">`bind`</span> _shiftRows</code></pre>
+<p>To create the AES FSM we extract the transfer function from input state and output state by using an accessor to the state:</p>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="ot">nextAESState ::</span> <span class="dt">AESState</span> <span class="ot">-&gt;</span> <span class="dt">AESState</span>
+nextAESState  <span class="fu">=</span> execState AES.round</code></pre>
+<h2 id="the-synthesized-fsm">The synthesized FSM</h2>
+<p>The final FSM is just something that takes an initial state and no inputs and produces an output equal to the state.</p>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="ot">aesMealy::</span> <span class="dt">AESState</span> <span class="ot">-&gt;</span> () <span class="ot">-&gt;</span> (<span class="dt">AESState</span>, <span class="dt">AESState</span>)
+aesMealy s () <span class="fu">=</span> (s&#39;, s&#39;)
+  <span class="kw">where</span>
+    s&#39; <span class="fu">=</span> nextAESState s</code></pre>
+<p>The <code>TopEntity</code> is going to be a synthesized Mealy machine with <code>aesMealy</code> as the transition function.</p>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell">
+<span class="ot">topEntity ::</span> <span class="dt">Signal</span> () <span class="ot">-&gt;</span> <span class="dt">Signal</span> <span class="dt">AESState</span>
+topEntity <span class="fu">=</span> mealy aesMealy aesInitState</code></pre>
+</body>
+</html>

@@ -1,15 +1,15 @@
-{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE DataKinds       #-}
 {-# LANGUAGE TemplateHaskell #-}
 
 module ShiftRows where
 
-import Types
-import CLaSH.Prelude
-import Control.Monad.Trans.State.Lazy
-import GF28
-import Language.Haskell.TH
+import           CLaSH.Prelude
+import           Control.Monad.Trans.State.Lazy
+import           GF28
+import           Language.Haskell.TH
+import           Types
 
-$(_buildSBox)
+
 
 _shiftRows:: AESStateProcessor
-_shiftRows = _genStateProcessor sbox
+_shiftRows = _genStateProcessor id

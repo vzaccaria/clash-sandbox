@@ -1,12 +1,13 @@
-{-# LANGUAGE DataKinds #-}
-
+{-# LANGUAGE DataKinds       #-}
+{-# LANGUAGE TemplateHaskell #-}
 module SubBytes where
 
-import Types
-import CLaSH.Prelude
-import Control.Monad.Trans.State.Lazy
-import GF28
+import           CLaSH.Prelude
+import           GF28
+import           Types
+
+$(_buildSBox)
 
 
 _subBytes:: AESStateProcessor
-_subBytes = _genStateProcessor id
+_subBytes = _genStateProcessor sbox

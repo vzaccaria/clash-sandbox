@@ -6,12 +6,12 @@ use IEEE.MATH_REAL.ALL;
 use work.all;
 use work.types.all;
 
-entity id_6 is
+entity id_5 is
   port(eta_i1   : in unsigned(7 downto 0);
        topLet_o : out unsigned(7 downto 0));
 end;
 
-architecture structural of id_6 is
+architecture structural of id_5 is
 begin
   topLet_o <= eta_i1;
 end;

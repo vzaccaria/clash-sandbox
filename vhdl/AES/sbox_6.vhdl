@@ -6,12 +6,12 @@ use IEEE.MATH_REAL.ALL;
 use work.all;
 use work.types.all;
 
-entity sbox_5 is
+entity sbox_6 is
   port(ds_i1    : in unsigned(7 downto 0);
        topLet_o : out unsigned(7 downto 0));
 end;
 
-architecture structural of sbox_5 is
+architecture structural of sbox_6 is
   signal subjLet_0   : boolean;
   signal subjLet_1   : boolean;
   signal altLet_2    : unsigned(7 downto 0);

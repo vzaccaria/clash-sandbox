@@ -1,13 +1,13 @@
-{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE DataKinds       #-}
 {-# LANGUAGE TemplateHaskell #-}
 
 module GF28 where
 
-import Types
-import GHC.List
-import CLaSH.Prelude
-import Control.Monad.Trans.State.Lazy
-import Language.Haskell.TH
+import           CLaSH.Prelude
+import           Control.Monad.Trans.State.Lazy
+import           GHC.List
+import           Language.Haskell.TH
+import           Types
 
 
 
