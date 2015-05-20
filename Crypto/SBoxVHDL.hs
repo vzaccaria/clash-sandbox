@@ -1,20 +1,23 @@
-{-# LANGUAGE DataKinds       #-}
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE CPP                   #-}
+{-# LANGUAGE ConstraintKinds       #-}
+{-# LANGUAGE DataKinds             #-}
+{-# LANGUAGE FlexibleContexts      #-}
+{-# LANGUAGE ImpredicativeTypes    #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE PolyKinds             #-}
+{-# LANGUAGE RankNTypes            #-}
+{-# LANGUAGE TemplateHaskell       #-}
+{-# LANGUAGE TypeFamilies          #-}
+{-# LANGUAGE TypeOperators         #-}
+{-# LANGUAGE UndecidableInstances  #-}
 
-module GF28 where
+module SBoxVHDL where
 
-import           CLaSH.Prelude
-import           Control.Monad.Trans.State.Lazy
 import           GHC.List
 import           Language.Haskell.TH
-import           Types
+import           Mask
 
-
-
--- FIXME: Should use a blockram to store the coefficients here.
--- Or, maybe use template haskell to generate the function.
-
-sboxTable :: [AESByte]
+sboxTable :: [UAESByte]
 sboxTable = [
   0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76,
   0xca, 0x82, 0xc9, 0x7d, 0xfa, 0x59, 0x47, 0xf0, 0xad, 0xd4, 0xa2, 0xaf, 0x9c, 0xa4, 0x72, 0xc0,
@@ -41,10 +44,10 @@ _byteLitP:: Integral a => a -> Q Pat
 _byteLitP x = litP $ integerL $ toInteger x
 
 -- returns an element of sboxTable as a quoted expression
-_sbox:: AESByte -> Q Exp
+_sbox:: UAESByte -> Q Exp
 _sbox x = _byteLit (sboxTable GHC.List.!! (fromEnum x))
 
-_buildClause :: AESByte -> Clause
+_buildClause :: UAESByte -> Clause
 _buildClause x = Clause [ LitP (IntegerL (toInteger x)) ]
                (NormalB (LitE (IntegerL (toInteger(sboxTable GHC.List.!! (fromEnum x))))))
                []
@@ -57,3 +60,19 @@ _buildDecl = [
 
 _buildSBox:: Q [Dec]
 _buildSBox = return $ _buildDecl
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--

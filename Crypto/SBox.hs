@@ -11,22 +11,35 @@
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
 
-module AES where
+module SBox where
 
-import           CLaSH.Prelude
-import           Control.Monad.Trans.State.Lazy
+#ifndef CLASH
+
 import           Mask
-import           SBox
+import qualified SBoxHs as SH
+
+sbox :: (Safe n, Public m) => Masked n -> Masked m
+sbox = SH.sbox
+
+#else
+
+import qualified SBoxVHDL as SV
+$(_buildSBox)
+
+#endif
 
 
--- nextAESState :: UAESByte -> UAESByte
-nextAESState :: (Safe n, Safe m) => Masked n -> Masked (m :-: '[ 0 ])
-nextAESState sin = maskPublic0 (sbox sin) 0
 
--- aesMealy:: UAESByte -> () -> (UAESByte, UAESByte)
--- aesMealy s () = (s', s')
---  where
---    s' = nextAESState s
+
+
+
+
+
+
+
+
+
+
+
+
 --
--- topEntity :: Signal () -> Signal UAESByte
--- topEntity = mealy aesMealy

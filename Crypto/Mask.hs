@@ -1,64 +1,85 @@
-{-# LANGUAGE DataKinds           #-}
-{-# LANGUAGE GADTs               #-}
-{-# LANGUAGE LiberalTypeSynonyms #-}
-{-# LANGUAGE RankNTypes          #-}
-{-# LANGUAGE TypeFamilies        #-}
-{-# LANGUAGE TypeOperators       #-}
+{-# LANGUAGE ConstraintKinds       #-}
+{-# LANGUAGE DataKinds             #-}
+{-# LANGUAGE FlexibleContexts      #-}
+{-# LANGUAGE ImpredicativeTypes    #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-
+{-# LANGUAGE PolyKinds             #-}
+{-# LANGUAGE RankNTypes            #-}
+{-# LANGUAGE TypeFamilies          #-}
+{-# LANGUAGE TypeOperators         #-}
+{-# LANGUAGE UndecidableInstances  #-}
 
 module Mask where
 
-import           GHC.TypeLits ()
--- import           TypeList
+import qualified CLaSH.Prelude               as CP
+import qualified CLaSH.Sized.Vector          as C
 
-data Mask = Zero | Succ Mask
-
-
-
--- We can use now `Mask as a kind with two types:
--- `Zero
--- `Succ n, where (n is of kind `Mask)
-
-data Masked :: * -> [ Mask ] -> * where
-  Public        :: { _takep :: a } -> Masked a '[]
-  MaskedWithM0  :: { _takem :: a } -> Masked a '[ 'Zero ]
-
-public :: Int -> Masked Int '[]
-public i = Public i
-
-masked0 i = MaskedWithM0 i
-
--- data (NotEmpty ms ~ 'True) => Safe a ms = S (Masked a ms)
-
-type family NotEmpty (list :: [Mask]) :: Bool where
-   NotEmpty  '[] = 'False
-   NotEmpty  (a ': b) = 'True
+import           Data.Promotion.Prelude.List
+import           GHC.Base
+import           GHC.TypeLits
 
 
+-- Useful type functions
+type family Safe (n :: [Nat]) :: Constraint where
+  Safe '[ ] = False ~ True
+  Safe (a ': b)  = ()
 
-type M0 a = Masked a '[ 'Zero ]
-type S00 a = Masked a '[ 'Zero ] -> Masked a '[ 'Zero ]
+type family Public (n :: [Nat]) :: Constraint where
+    Public '[ ] = ()
+    Public (a ': b)  = False ~ True
 
-type M1 a = Masked a '[ 'Succ Zero ]
-type S11 a = Masked a '[ Succ Zero ] -> Masked a '[ Succ Zero ]
+-- Set symmetric difference
+type family (:-:) (n :: [Nat]) (m :: [Nat]) :: [Nat] where
+    m :-: n = (m :\\ n) `Union` (n :\\ m)
+
+
+-- Useful basic data
+type Byte         = (CP.Unsigned 8)
+newtype Masked n = MkMasked Byte
+
+
+-- Private `smart` constructors; It uses Polykinds for n
+
+mask :: forall n. Byte -> Masked (n :: [Nat])
+mask i = MkMasked i
+
+unmask :: Masked t -> Byte
+unmask (MkMasked i) = i
+
+-- Public `smart` constructors, mask value with
+
+maskMasked :: (Safe n, Safe (n :-: m)) => Masked n -> Masked m -> Masked (n :-: m)
+maskMasked (MkMasked x) (MkMasked y) = MkMasked (x CP.^ y)
+
+maskPublic0 :: (Safe n, Public m, Safe (n :-: '[ 0 ])) => Masked n -> Masked m -> Masked (n :-: '[ 0 ])
+maskPublic0 (MkMasked x) (MkMasked y) = MkMasked (x CP.^ y)
+
+
+-- Public types for AES
+type SAESByte      = (Safe n) => Masked n
+type SAESVec16     = (Safe n) => C.Vec 16 (Masked n)
+
+type UAESByte      = (CP.Unsigned 8)
+type UAESVec16     = C.Vec 16 (UAESByte)
+
+
+-- Just Tests:
+
+-- xor :: (Safe n, Safe (n :-: m)) => Masked n -> Masked m -> Masked (n :-: m)
+-- xor (MkMasked x) (MkMasked y) =  MkMasked (x CP.^ y)
 --
--- type SafeNum a = (Num a) => Safe a
+-- z :: Masked ('[  ] :: [Nat])
+-- z = mask 10
 --
--- -- Tests
-z :: Masked Integer '[ 'Zero ]
-z = masked0 1
+-- q :: Masked '[ 3 ]
+-- q = mask 3
 
-p :: Masked Int '[]
-p = public 3
+-- t = q `xor` z
 
-increment :: forall a ms . (Num a, (NotEmpty ms ~  True)) => Masked a ms -> Masked a ms
-increment a = masked0 ((_takem a) + 1)
--- --
+
+
+
+
+
+
 --
-q = increment z
-
-t = increment p
--- z = (masked0 3)
---
--- y = increment z
