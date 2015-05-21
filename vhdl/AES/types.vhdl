@@ -12,6 +12,8 @@ package types is
   function toSLV (p : product0) return std_logic_vector;
   function toSLV (u : in unsigned) return std_logic_vector;
   function toSLV (value :  array_of_unsigned_8) return std_logic_vector;
+  function to_integer (i : in integer) return integer;
+  function toSLV (i : in integer) return std_logic_vector;
   function toSLV (b : in boolean) return std_logic_vector;
   function fromSLV (sl : in std_logic_vector) return boolean;
 end;
@@ -39,6 +41,14 @@ package body types is
       result(((i - 1) * 8) + 1 to i*8) := toSLV(ivalue(i));
     end loop;
     return result;
+  end;
+  function to_integer (i : in integer) return integer is
+  begin
+    return i;
+  end;
+  function toSLV (i : in integer) return std_logic_vector is
+  begin
+    return std_logic_vector(to_signed(i,32));
   end;
   function toSLV (b : in boolean) return std_logic_vector is
   begin

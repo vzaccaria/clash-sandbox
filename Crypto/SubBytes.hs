@@ -10,4 +10,4 @@ $(_buildSBox)
 
 
 _subBytes:: AESStateProcessor
-_subBytes = _genStateProcessor sbox
+_subBytes = _genByteProcessor sbox
