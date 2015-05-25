@@ -19,6 +19,10 @@ xor : Vect n Bool -> Vect n Bool -> Vect n Bool
 xor [] [] = []
 xor (x :: xs) (y :: ys) = (x ^ y) :: (xor xs ys)
 
+zeroVec: (n: Nat) -> Vect n Bool 
+zeroVec Z = []
+zeroVec (S k) = False :: zeroVec k
+
 b1 : Byte
 b1 = [ False, True, False, False, True, False, True, False ]
 
@@ -28,13 +32,17 @@ zero = [ False, False, False, False, False, False, False, False ]
 a : Byte
 a = xor b1 zero
 
-xorBReduces: (n : Bool) -> n ^ n = False
-xorBReduces False = Refl
-xorBReduces True = Refl
+xorReduces: (n : Bool) -> n ^ n = False
+xorReduces False = Refl
+xorReduces True = Refl
 
-xorReduces: (n : Byte) -> xor n n = zero
-xorReduces (x :: xs) = ?xorReduces_rhs_1
+%name Byte b1,b2,b3
 
+xorBReduces: (xs: Vect n Bool) -> xs `xor` xs = zeroVec n
+xorBReduces [] = Refl
+xorBReduces (x :: xs) = rewrite xorReduces x in rewrite xorBReduces xs in Refl
+
+                                   
 ----
 ---- We could define a data type
 ---- The part after : is the type of the constructor
