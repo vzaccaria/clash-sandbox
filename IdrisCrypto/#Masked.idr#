@@ -6,6 +6,8 @@ Mask : Type
 Mask = Vect 8 Bool
 
 
+
+
 data Masked: Type -> Mask -> Type where
   masked: a -> Masked a x
 
