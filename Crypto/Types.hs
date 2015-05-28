@@ -1,50 +1,36 @@
-{-# LANGUAGE DataKinds       #-}
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE DataKinds #-}
 
 
 module Types where
 
 import           CLaSH.Prelude
-import qualified CLaSH.Sized.Vector             as C
-import           Control.Monad.Trans.State.Lazy
+import           Prelude       hiding ((!!), (++))
 
 
 type AESByte  = (Unsigned 8)
 type AESState = Vec 16 AESByte -- 4x4 GF28
-type AESKey   = Unsigned 128 -- 4x4 GF28
 
 type StateTransform = AESState -> AESState
 type ByteTransform = AESByte -> AESByte
 type RowTransform = (Vec 4 AESByte) -> (Vec 4 AESByte)
 
-type AESStateProcessor = State AESState ()
-
-
-_genByteProcessor:: ByteTransform -> AESStateProcessor
-_genByteProcessor f = modifyStateWith (byteMapToWholeState f)
-
-_genRowProcessor:: RowTransform -> AESStateProcessor
-_genRowProcessor f = modifyStateWith (rowMapToWholeState f)
-
-
-modifyStateWith::  StateTransform -> AESStateProcessor
-modifyStateWith f = do { (s) <- get; put (f s)}
-
-bind :: AESStateProcessor -> AESStateProcessor -> AESStateProcessor
-bind fr sn = let snNextState = \s -> execState sn s in
-              withState (snNextState) fr
-
-byteMapToWholeState :: ByteTransform -> StateTransform
-byteMapToWholeState f = C.map f
-
-rowMapToWholeState :: RowTransform -> StateTransform
-rowMapToWholeState f s = a C.++ b C.++ c C.++ d  where
-  a = f( (s C.!! 0) :> (s C.!! 4) :> (s C.!! 8 ) :> (s C.!! 12) :> Nil)
-  b = f( (s C.!! 1) :> (s C.!! 5) :> (s C.!! 9 ) :> (s C.!! 13) :> Nil)
-  c = f( (s C.!! 2) :> (s C.!! 6) :> (s C.!! 10) :> (s C.!! 14) :> Nil)
-  d = f( (s C.!! 3) :> (s C.!! 7) :> (s C.!! 11) :> (s C.!! 15) :> Nil)
+mapRow :: RowTransform -> StateTransform
+mapRow f s = a ++ b ++ c ++ d  where
+  a = f( (s !! 0) :> (s !! 4) :> (s !! 8 ) :> (s !! 12) :> Nil)
+  b = f( (s !! 0) :> (s !! 5) :> (s !! 9 ) :> (s !! 13) :> Nil)
+  c = f( (s !! 2) :> (s !! 6) :> (s !! 10) :> (s !! 14) :> Nil)
+  d = f( (s !! 3) :> (s !! 7) :> (s !! 11) :> (s !! 15) :> Nil)
 
 -- Other initializations
 
-aesInitState::AESState
-aesInitState = (1:>2:>3:>4:>1:>2:>3:>4:>1:>2:>3:>4:>1:>2:>3:>4:>Nil)
+aesInitState:: AESState
+aesInitState = (0:>0:>0:>0:>0:>0:>0:>0:>0:>0:>0:>0:>0:>0:>0:>0:>Nil)
+
+aesSecretKey:: AESState
+aesSecretKey = 0x00 :> 0x01 :> 0x02 :> 0x03 :>
+               0x04 :> 0x05 :> 0x06 :> 0x07 :>
+               0x08 :> 0x09 :> 0x0a :> 0x0b :>
+               0x0c :> 0x0d :> 0x0e :> 0x0f :> Nil
+
+data AESInput   = I AESState Bool deriving Show
+data AESOutput  = O AESState Bool deriving Show
