@@ -7,15 +7,16 @@ import           CLaSH.Prelude
 import           Prelude       hiding ((!!), (++))
 
 
-type AESByte  = (Unsigned 8)
-type AESState = Vec 16 AESByte -- 4x4 GF28
+type AESByte            = (Unsigned 8)
+type AESState           = Vec 16 AESByte          -- 4x4 GF28
+type AESControl         = (AESState, Unsigned 4)  -- (Current state, number of round)
 
-type StateTransform = AESState -> AESState
-type ByteTransform = AESByte -> AESByte
-type RowTransform = (Vec 4 AESByte) -> (Vec 4 AESByte)
+type StateTransform     = AESState -> AESState
+type ByteTransform      = AESByte -> AESByte
+type RowTransform       = (Vec 4 AESByte) -> (Vec 4 AESByte)
 
-mapRow :: RowTransform -> StateTransform
-mapRow f s = a ++ b ++ c ++ d  where
+mapCol :: RowTransform -> StateTransform
+mapCol f s = a ++ b ++ c ++ d  where
   a = f( (s !! 0) :> (s !! 4) :> (s !! 8 ) :> (s !! 12) :> Nil)
   b = f( (s !! 0) :> (s !! 5) :> (s !! 9 ) :> (s !! 13) :> Nil)
   c = f( (s !! 2) :> (s !! 6) :> (s !! 10) :> (s !! 14) :> Nil)
