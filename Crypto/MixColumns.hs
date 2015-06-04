@@ -8,8 +8,6 @@ import           GF28
 import           Prelude       hiding ((!!), (**), (^^))
 import           Types
 
-$(_buildGFPoly)
-
 infixl 7 **
 -- Fake multiplication in GF2
 (**) :: AESByte -> Integer -> AESByte

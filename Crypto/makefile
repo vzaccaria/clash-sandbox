@@ -7,15 +7,15 @@
 
 
 .PHONY: all
-all: k-g8fsxdx7 k-dqbxf4ow
+all: k-6tp81tpq k-q05nb0q6
 
 
 .PHONY: test
-test: k-49xfwnxh
+test: k-j3bt4c5n
 
 
 .PHONY: clean
-clean: k-t79ol3f3 k-vuhq9rbc
+clean: k-jdmubdwj k-ebw7y487
 
 
 .PHONY: prepare
@@ -24,28 +24,28 @@ prepare:
 
 
 
-.PHONY: k-g8fsxdx7
-k-g8fsxdx7:  
+.PHONY: k-6tp81tpq
+k-6tp81tpq:  
 	make clean
 
 
-.PHONY: k-dqbxf4ow
-k-dqbxf4ow:  
-	clash --vhdl Ram.hs
+.PHONY: k-q05nb0q6
+k-q05nb0q6:  
+	clash --vhdl Aes.hs
 
 
-.PHONY: k-49xfwnxh
-k-49xfwnxh:  
-	runhaskell QCRam.hs
+.PHONY: k-j3bt4c5n
+k-j3bt4c5n:  
+	runhaskell QCRom.hs
 
 
-.PHONY: k-t79ol3f3
-k-t79ol3f3:  
+.PHONY: k-jdmubdwj
+k-jdmubdwj:  
 	rm -rf vhdl
 
 
-.PHONY: k-vuhq9rbc
-k-vuhq9rbc:  
+.PHONY: k-ebw7y487
+k-ebw7y487:  
 	rm -f *.hi *.o *.s *.dyn_hi *.dyn_o
 
 

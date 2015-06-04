@@ -7,11 +7,11 @@ generateProject(function (_) {
 
   _.collect("all", function (_) {
     _.cmd("make clean")
-    _.cmd("clash --vhdl Ram.hs")
+    _.cmd("clash --vhdl Aes.hs")
   })
 
   _.collect("test", function (_) {
-    _.cmd("runhaskell QCRam.hs") 
+    _.cmd("runhaskell QCRom.hs")
   })
 
 

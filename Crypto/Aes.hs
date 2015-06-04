@@ -11,10 +11,6 @@ import           ShiftRows
 import           Types
 
 
--- Creates an sbox table
-$(_buildSBox)
-
-
 addRoundKey i = zipWith xor i aesSecretKey
 
 -- The second parameter is true if we are in the last round
