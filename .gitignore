@@ -2,3 +2,5 @@
 *.hi
 *.s
 systemverilog
+Crypto
+vhdl
