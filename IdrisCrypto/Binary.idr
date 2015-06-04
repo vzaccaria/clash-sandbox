@@ -1,6 +1,6 @@
 module Binary
 
-import Data.Vect
+import Data.Bits 
 
 data BinChar : Char -> Type where
   O : BinChar '0'
@@ -10,20 +10,14 @@ data Every : (a -> Type) -> List a -> Type where
   Nil  : {P : a -> Type} -> Every P []
   (::) : {P : a -> Type} -> P x -> Every P xs -> Every P (x :: xs)
 
-fromBinCharsB : Every BinChar xs -> Vect (length xs) Bool
-fromBinCharsB [] = []
-fromBinCharsB (O :: ys) = False :: fromBinCharsB(ys)
-fromBinCharsB (I :: ys) = True  :: fromBinCharsB(ys)
+fromBinCharsB : Every BinChar xs -> Bits (length xs) 
+fromBinCharsB (O :: []) = (intToBits 0) 
+fromBinCharsB (I :: []) = (intToBits 1) 
+fromBinCharsB (O :: ys) = zeroExtend (fromBinCharsB ys))
+fromBinCharsB (I :: ys) = setBit (length ys + 1) (zeroExtend (fromBinCharsB(ys)))
 
-xor : Bool -> Bool -> Bool
-xor True  b = not b
-xor False b = b
-
-xorB : Vect n Bool -> Vect n Bool -> Vect n Bool
-xorB a b = zipWith (xor) a b
-
--- Constructor, allows binary literals
-
-B : (s: String) -> {auto p : Every BinChar (unpack s)} -> Vect (length (unpack s)) Bool
+B : (s: String) -> {auto p : Every BinChar (unpack s)} -> Bits (length (unpack s)) 
 B {p} s = fromBinCharsB p
 
+x: Bits 3
+x = B "100"
