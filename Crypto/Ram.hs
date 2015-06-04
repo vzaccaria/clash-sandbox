@@ -1,18 +1,32 @@
-{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE DataKinds     #-}
+{-# LANGUAGE TypeOperators #-}
 
 module Ram where
 
-import           CLaSH.Prelude hiding (map, select, v)
+import           CLaSH.Prelude         hiding (map, select, v)
+import           CLaSH.Sized.BitVector
+import           Prelude               hiding (splitAt, (!!), (++))
 import           Types
 
-select2 :: Signal AESByte -> Signal AESByte -> Signal Bool -> Signal AESByte
-select2 v1 v2 n = mux n v1 v2
+type Addr       = BitVector 4
+type BitS       = Signal Bit
+type BytePairS  = Signal (Vec 2 AESByte)
+type ByteS      = Signal (Vec 1 AESByte)
+type ByteC      = Vec 1 AESByte
 
-ramRow :: Vec 16 AESByte -> Signal (Unsigned 4) -> Signal AESByte
-ramRow v n = select2 v0 v1 n0 where
-    n0    = signal (n == 0x00 || n == 0x01)
-    v0    = signal (v CLaSH.Prelude.!! 10)
-    v1    = signal (v CLaSH.Prelude.!! 11)
 
-topEntity :: Signal (Unsigned 4) -> Signal AESByte
-topEntity = ramRow aesSecretKey
+-- From Clash example
+
+-- decoderShift ::  BitVector 4 -> BitVector 16
+-- decoderShift binaryIn = 1 `shiftL` (fromIntegral binaryIn)
+
+select16 :: Vec 16 AESByte -> BitVector 4 ->  Vec 1 AESByte
+select16 v n = (v !! (fromIntegral n)) :> Nil
+
+
+ramRow' :: Vec 16 AESByte -> Signal Addr -> Signal (ByteC)
+ramRow' v a = (fmap (select16 v)) a where
+
+
+topEntity :: Signal Addr -> Signal ByteC
+topEntity input = ramRow' aesSecretKey input

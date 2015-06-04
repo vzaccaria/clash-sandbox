@@ -6,7 +6,12 @@ generateProject(function (_) {
 
 
   _.collect("all", function (_) {
-    _.cmd("ghc --make AES.hs")
+    _.cmd("make clean")
+    _.cmd("clash --vhdl Ram.hs")
+  })
+
+  _.collect("test", function (_) {
+    _.cmd("runhaskell QCRam.hs") 
   })
 
 

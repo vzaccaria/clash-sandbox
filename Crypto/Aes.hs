@@ -32,7 +32,7 @@ aesMealy :: AESControl -> AESInput -> (AESControl, AESOutput)
 aesMealy s (I text rd) = fsm s text rd
  where
    fsm _         txt    True     = ( (addRoundKey txt, 0)      , O aesInitState False)
-   fsm (s', c)   _      False    = ( (round s' (c == 9), c+1)  , O s' False)
+   fsm (s', c)   _      False    = ( (round s' (c == 9), c+1)  , O s' False          )
 
 
 
