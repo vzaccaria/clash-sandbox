@@ -21,8 +21,9 @@ t = masked 3
 f : Vect 8 Bool
 f = B"01001010"
 
-sum':  Masked Nat x -> Masked Nat y -> Masked Nat (x `xorB` y)
-sum' (masked a) (masked b) = masked (a+b)
+(+):  Masked Nat x -> Masked Nat y -> Masked Nat (x `xorB` y)
+(+) (masked a) (masked b) = masked (a+b)
 
-
+c : Masked Nat (B "00000010" )
+c = q + t
 
