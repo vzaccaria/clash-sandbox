@@ -13,14 +13,14 @@ type AESControl         = (AESState, Unsigned 4)  -- (Current state, number of r
 
 type StateTransform     = AESState -> AESState
 type ByteTransform      = AESByte -> AESByte
-type RowTransform       = (Vec 4 AESByte) -> (Vec 4 AESByte)
+type ColTransform       = (Vec 4 AESByte) -> (Vec 4 AESByte)
 
-mapCol :: RowTransform -> StateTransform
+mapCol :: ColTransform -> StateTransform
 mapCol f s = a ++ b ++ c ++ d  where
-  a = f( (s !! 0) :> (s !! 4) :> (s !! 8 ) :> (s !! 12) :> Nil)
-  b = f( (s !! 0) :> (s !! 5) :> (s !! 9 ) :> (s !! 13) :> Nil)
-  c = f( (s !! 2) :> (s !! 6) :> (s !! 10) :> (s !! 14) :> Nil)
-  d = f( (s !! 3) :> (s !! 7) :> (s !! 11) :> (s !! 15) :> Nil)
+  a = f( (s !! 0) :> (s !! 1) :> (s !! 2 ) :> (s !! 3) :> Nil)
+  b = f( (s !! 4) :> (s !! 5) :> (s !! 6 ) :> (s !! 7) :> Nil)
+  c = f( (s !! 8) :> (s !! 9) :> (s !! 10) :> (s !! 11) :> Nil)
+  d = f( (s !! 12) :> (s !! 13) :> (s !! 14) :> (s !! 15) :> Nil)
 
 -- Other initializations
 
