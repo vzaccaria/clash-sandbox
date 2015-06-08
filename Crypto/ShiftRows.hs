@@ -6,6 +6,9 @@ import           CLaSH.Prelude
 import           Prelude       hiding ((!!))
 import           Types
 
+-- This can be represented with a product of a permutation matrix.
+-- (See http://en.wikipedia.org/wiki/Kronecker_product for properties)
+
 shiftRows :: AESState -> AESState
 shiftRows i =   o0  :> o1   :> o2   :> o3   :>
                 o4  :> o5   :> o6   :> o7   :>

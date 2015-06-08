@@ -9,12 +9,13 @@ import           Prelude       hiding ((!!), (++))
 
 type AESByte            = (Unsigned 8)
 type AESState           = Vec 16 AESByte          -- 4x4 GF28
-type AESControl         = (AESState, Unsigned 4)  -- (Current state, number of round)
+type AESControl         = (AESState, (AESState, Unsigned 4))  -- (Current state, Current Key, number of round)
 
 type StateTransform     = AESState -> AESState
 type ByteTransform      = AESByte -> AESByte
 type ColTransform       = (Vec 4 AESByte) -> (Vec 4 AESByte)
 
+{-# INLINE mapCol #-}
 mapCol :: ColTransform -> StateTransform
 mapCol f s = a ++ b ++ c ++ d  where
   a = f( (s !! 0) :> (s !! 1) :> (s !! 2 ) :> (s !! 3) :> Nil)
