@@ -49,7 +49,7 @@ keySchedule = testGroup "HUnit - KeySchedule" [
         expect  = toList round1Key in
         (assertEqual "should be equal" exec expect)
   ),
-  (testCase "Standard dictated key for round1" $
+  (testCase "Standard dictated key for round4" $
   let   exec    = toList $ fst (keyProd (round3Key, round4))
         expect  = toList round4Key in
         (assertEqual "should be equal" exec expect)
