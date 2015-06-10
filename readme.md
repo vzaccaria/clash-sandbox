@@ -18,6 +18,10 @@ before invoking docker:
 
 Windows users should follow instructions on the boot2docker website.
 
+If a "kernel extension not found error" is thrown, relaunch:
+
+sudo /Library/Application\ Support/VirtualBox/LaunchDaemons/VirtualBoxStartup.sh start
+
 Creation of the container (only once)
 =====================================
 

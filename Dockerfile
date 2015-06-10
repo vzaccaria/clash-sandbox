@@ -14,4 +14,4 @@ RUN /opt/cabal/1.22/bin/cabal update
 ENV PATH $PATH:/opt/ghc/7.10.1/bin:/opt/cabal/1.22/bin
 ENV LD_LIBRARY_PATH /lib/x86_64-linux-gnu
 RUN ln -s /lib/x86_64-linux-gnu/libtinfo.so.5.9 /lib/x86_64-linux-gnu/libtinfo.so
-RUN cabal install clash-ghc
+RUN cabal install clash-ghc-5.7

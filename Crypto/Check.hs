@@ -5,10 +5,12 @@
 module Check where
 
 import           Aes
-import           CLaSH.Prelude hiding (take, zipWith, (++))
-import           Prelude
+import           CLaSH.Prelude hiding (take, zipWith, (++), round)
+import           Prelude hiding (round)
 import           Types
 import           KeySchedule(keyProd)
+import Utils
+import Math
 
 import Test.Tasty
 -- import Test.Tasty.SmallCheck as SC
@@ -19,7 +21,7 @@ import Test.Tasty.HUnit
 main = defaultMain tests
 
 tests :: TestTree
-tests = testGroup "Tests" [keySchedule]
+tests = testGroup "Tests" [keySchedule, aes]
 
 
 
@@ -55,3 +57,29 @@ keySchedule = testGroup "HUnit - KeySchedule" [
         (assertEqual "should be equal" exec expect)
   )
     ]
+
+-- Page 33 of AES Standard - Appendix B.
+-- Trans is used to transform a matrix state in that page to an actual state in memory
+i0 :: AESState
+i0 = trans $  0x32 :> 0x88 :> 0x31  :> 0xe0  :>
+              0x43 :> 0x5a :> 0x31  :> 0x37  :>
+              0xf6 :> 0x30 :> 0x98  :> 0x07  :>
+              0xa8 :> 0x8d :> 0xa2  :> 0x34  :> Nil
+
+k0  =         0x2b :> 0x7e :> 0x15 :> 0x16 :>
+              0x28 :> 0xae :> 0xd2 :> 0xa6 :>
+              0xab :> 0xf7 :> 0x15 :> 0x88 :>
+              0x09 :> 0xcf :> 0x4f :> 0x3c :> Nil
+
+ak0 = trans $ 0x19 :> 0xa0 :> 0x9a :> 0xe9  :> 0x3d :> 0xf4 :> 0xc6 :> 0xf8  :> 0xe3 :> 0xe2 :> 0x8d :> 0x48  :> 0xbe :> 0x2b :> 0x2a :> 0x08 :> Nil
+sb0 = trans $ 0xd4 :> 0xe0 :> 0xb8 :> 0x1e  :> 0x27 :> 0xbf :> 0xb4 :> 0x41  :> 0x11 :> 0x98 :> 0x5d :> 0x52  :> 0xae :> 0xf1 :> 0xe5 :> 0x30 :> Nil
+sr0 = trans $ 0xd4 :> 0xe0 :> 0xb8 :> 0x1e  :> 0xbf :> 0xb4 :> 0x41 :> 0x27  :> 0x5d :> 0x52 :> 0x11 :> 0x98  :> 0x30 :> 0xae :> 0xf1 :> 0xe5 :> Nil
+mc0 = trans $ 0x04 :> 0xe0 :> 0x48 :> 0x28  :> 0x66 :> 0xcb :> 0xf8 :> 0x06  :> 0x81 :> 0x19 :> 0xd3 :> 0x26  :> 0xe5 :> 0x9a :> 0x7a :> 0x4c :> Nil
+
+
+aes = testGroup "HUnit - AES Encrypt" [
+  (testCase "Compute addKey"     $ (assertEqual ""   (addRK k0 i0) ak0) ),
+  (testCase "Compute subBytes"   $ (assertEqual ""   (subBytes $ (addRK k0 i0)) sb0) ),
+  (testCase "Compute shiftRows"  $ (assertEqual ""   (shiftRows . subBytes $ (addRK k0 i0)) sr0) ),
+  (testCase "Compute mixColumns" $ (assertEqual ""   (mixColumns . shiftRows . subBytes $ (addRK k0 i0)) mc0) )
+  ]

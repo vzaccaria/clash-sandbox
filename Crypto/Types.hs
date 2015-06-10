@@ -3,9 +3,11 @@
 
 module Types where
 
-import           CLaSH.Prelude
-import           Prelude       hiding ((!!), (++))
-
+import             CLaSH.Prelude
+import             CLaSH.Sized.Vector hiding (foldl)
+import             Prelude       hiding ((!!), (++), map)
+import             Numeric    (showHex)
+import             Text.Printf
 
 type AESByte            = (Unsigned 8)
 type AESState           = Vec 16 AESByte          -- 4x4 GF28
@@ -15,19 +17,13 @@ type StateTransform     = AESState -> AESState
 type ByteTransform      = AESByte -> AESByte
 type ColTransform       = (Vec 4 AESByte) -> (Vec 4 AESByte)
 
-{-# INLINE mapCol #-}
-mapCol :: ColTransform -> StateTransform
-mapCol f s = a ++ b ++ c ++ d  where
-  a = f( (s !! 0) :> (s !! 1) :> (s !! 2 ) :> (s !! 3) :> Nil)
-  b = f( (s !! 4) :> (s !! 5) :> (s !! 6 ) :> (s !! 7) :> Nil)
-  c = f( (s !! 8) :> (s !! 9) :> (s !! 10) :> (s !! 11) :> Nil)
-  d = f( (s !! 12) :> (s !! 13) :> (s !! 14) :> (s !! 15) :> Nil)
 
 -- Other initializations
 
 aesInitState:: AESState
 aesInitState = (0:>0:>0:>0:>0:>0:>0:>0:>0:>0:>0:>0:>0:>0:>0:>0:>Nil)
 
+-- From the AES Docks: 000102030405060708090a0b0c0d0e0f
 aesSecretKey:: AESState
 aesSecretKey = 0x00 :> 0x01 :> 0x02 :> 0x03 :>
                0x04 :> 0x05 :> 0x06 :> 0x07 :>

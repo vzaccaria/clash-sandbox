@@ -17,9 +17,14 @@ sboxVec256 = $(v sboxTable)
 gm2Vec256  = $(v gm2Table )
 gm3Vec256  = $(v gm3Table )
 
-sbox c = rom256 sboxVec256  (fromIntegral c)
-gm2  c = rom256 gm2Vec256   (fromIntegral c)
-gm3  c = rom256 gm3Vec256   (fromIntegral c)
+sbox :: AESByte -> AESByte
+sbox c = rom256 sboxVec256 c
+
+gm2 :: AESByte -> AESByte
+gm2  c = rom256 gm2Vec256  c
+
+gm3 :: AESByte -> AESByte
+gm3  c = rom256 gm3Vec256  c 
 
 
 rc :: Unsigned 4 -> AESByte
