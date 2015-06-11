@@ -6,9 +6,7 @@ module KeyScheduleSyn where
 
 import           CLaSH.Prelude hiding (round)
 import           GF28
-import           MixColumns
 import           Prelude       hiding (map, round, zipWith)
-import           ShiftRows
 import           Types
 import           KeySchedule
 

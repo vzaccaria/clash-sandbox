@@ -4,11 +4,11 @@
 
 module Check where
 
-import           Aes
-import           CLaSH.Prelude hiding (take, zipWith, (++), round)
-import           Prelude hiding (round)
-import           Types
-import           KeySchedule(keyProd)
+import Aes
+import CLaSH.Prelude hiding (take, zipWith, (++), round)
+import Prelude hiding (round)
+import Types
+import KeySchedule(keyProd)
 import Utils
 import Math
 
@@ -22,10 +22,6 @@ main = defaultMain tests
 
 tests :: TestTree
 tests = testGroup "Tests" [keySchedule, aes, aesE2E]
-
-
-
-
 
 keySchedule = testGroup "HUnit - KeySchedule" [
   (testCase "Standard dictated key for round1" $
