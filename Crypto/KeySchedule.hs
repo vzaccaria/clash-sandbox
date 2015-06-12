@@ -11,8 +11,8 @@ import Types
 
 type AESWord = Vec 4 AESByte
 
-keyProd :: (AESState, Unsigned 4) -> (AESState, Unsigned 4)
-keyProd (k, i) = ( (nextKey k) , (i + 1)) where
+nextKey :: (AESState, Unsigned 4) -> (AESState, Unsigned 4)
+nextKey (k, i) = ( (nextKey k) , (i + 1)) where
 
   xor' ::  AESWord ->  AESWord -> AESWord
   xor'= zipWith xor

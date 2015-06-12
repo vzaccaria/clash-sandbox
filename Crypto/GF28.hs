@@ -11,6 +11,7 @@ import           Prelude hiding ((!!))
 import           Rom
 import           SBox
 import           Types
+import Constants
 
 
 sboxVec256 = $(v sboxTable)
@@ -24,7 +25,7 @@ gm2 :: AESByte -> AESByte
 gm2  c = rom256 gm2Vec256  c
 
 gm3 :: AESByte -> AESByte
-gm3  c = rom256 gm3Vec256  c 
+gm3  c = rom256 gm3Vec256  c
 
 
 rc :: Unsigned 4 -> AESByte

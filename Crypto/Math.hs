@@ -29,14 +29,19 @@ mapCol f s = (a ++ b ++ c ++ d)  where
   d = f (col 3 s)
 
 mixCol :: Vec 4 AESByte -> Vec 4 AESByte
-mixCol (c0 :> c1 :> c2 :> c3 :> Nil) = m0 :> m1 :> m2 :> m3 :> Nil
+mixCol v = m0 :> m1 :> m2 :> m3 :> Nil
   where
-    o a0 a1 a2 a3 = (c0**a0) ^^ (c1**a1) ^^ (c2**a2) ^^ (c3**a3)
-
     m0 = o 2 3 1 1
     m1 = o 1 2 3 1
     m2 = o 1 1 2 3
     m3 = o 3 1 1 2
+
+    o a0 a1 a2 a3 = (c0**a0) ^^ (c1**a1) ^^ (c2**a2) ^^ (c3**a3)
+
+    c0 = v !! 0
+    c1 = v !! 1
+    c2 = v !! 2
+    c3 = v !! 3
 
 permute :: Integer -> Integer -> Integer -> Integer ->
            Integer -> Integer -> Integer -> Integer ->

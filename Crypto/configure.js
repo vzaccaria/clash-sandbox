@@ -7,7 +7,7 @@ generateProject(function (_) {
 
   _.collect("all", function (_) {
     _.cmd("make clean")
-    _.cmd("clash --vhdl Aes.hs")
+    _.cmd("clash --vhdl AesSyn.hs")
   })
 
   _.collect("test", function (_) {
