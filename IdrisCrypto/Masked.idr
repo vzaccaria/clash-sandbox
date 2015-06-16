@@ -1,6 +1,8 @@
 module Masked
 
 import Data.Bits
+import Data.So
+
 import Binary
 
 Mask : Type
@@ -13,25 +15,20 @@ data Masked: Type -> Mask -> Type where
 q : Masked Nat (B "00000001")
 q = masked 1
 
-t : Masked Nat (B "00000010")
+t : Masked Nat (B "00000001")
 t = masked 3
 
 syntax "is_secret" [x] [y] =  (((bitsToInt (x `xor` y)) > 0 ) = True)
 
+isSecret : Mask -> Mask -> Bool
+isSecret x y = (bitsToInt (x `xor` y)) > 0
 
-(+):  Masked Nat x -> Masked Nat y -> {
-  default tactics {
-    compute;
-    refine Refl; 
-    solve;
-  }
-  gt0: is_secret x y
-  } -> Masked Nat (x `xor` y)
-(+) (masked a) (masked b) {gt0} = masked (a+b)
+(+):  Masked Nat x -> Masked Nat y -> {default Oh p: So (isSecret x y) } -> Masked Nat (x `xor` y)
+(+) (masked a) (masked b) = masked (a+b)
 
 
 
-c : Masked Nat (B "00000011")
-c = (q + t) 
+c : Masked Nat (B "00000000")
+c = (+) q t
 
 -- TODO: XYZ
