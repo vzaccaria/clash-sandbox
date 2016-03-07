@@ -1,0 +1,20 @@
+---
+
+- hosts: deploy-hosts
+
+  sudo: true
+  
+  roles:
+      - { role: haskell, tags: [haskell, dev] }
+
+  tasks:
+    - name: Dev | ensure packages are installed
+      action: apt name="{{item}}" force=yes
+      with_items:
+            - vim
+            - zsh
+            - stow
+            - zip
+
+    - user: name=zaccaria shell=/bin/zsh
+    - user: name=ghcuser shell=/bin/zsh
